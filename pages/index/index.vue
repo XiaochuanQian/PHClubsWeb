@@ -6,6 +6,7 @@
         <text :class="['nav-item', currentPage === 'Home' ? 'active' : '']" @click="switchPage('Home')">Home</text>
         <text :class="['nav-item', currentPage === 'Documentation' ? 'active' : '']" @click="switchPage('Documentation')">Documentation</text>
         <text :class="['nav-item', currentPage === 'About' ? 'active' : '']" @click="switchPage('About')">About</text>
+		<text class="nav-item1 login-btn" @click="goToLogin">Login</text>
       </view>
     </view>
     <view class="content">
@@ -36,10 +37,16 @@ export default {
     }
   },
   methods: {
-    switchPage(page) {
-      this.currentPage = page
+      switchPage(page) {
+        this.currentPage = page
+      },
+      goToLogin() {
+        uni.navigateTo({
+          url: '../userLogin/userLogin'
+        })
+      }
     }
-  }
+  
 }
 </script>
 
@@ -146,5 +153,18 @@ export default {
   .nav-item {
     margin: 5px 0;
   }
+}
+
+.login-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #45a049;
 }
 </style>

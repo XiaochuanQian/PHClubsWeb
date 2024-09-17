@@ -3,14 +3,14 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "PH Clubs"
 			}
 		},
 		{
 			"path" : "pages/home/home",
 			"style" : 
 			{
-				"navigationBarTitleText" : ""
+				"navigationBarTitleText" : "PH Clubs | Home"
 			}
 		},
 		{
@@ -29,6 +29,13 @@
 		},
 		{
 			"path" : "navigation/navigation",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/userLogin/userLogin",
 			"style" : 
 			{
 				"navigationBarTitleText" : ""

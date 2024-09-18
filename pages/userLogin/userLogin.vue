@@ -1,7 +1,7 @@
 <template>
 	<view class="login-container">
 		<view class="login-box">
-			<view class="logo-container">
+			<view @click="navigateToHome" class="logo-container">
 				<image class="logo-image" src="/static/ph_club_logo_full.png" mode="aspectFit"></image>
 				<text class="logo-text">PH Clubs Login</text>
 			</view>
@@ -32,8 +32,8 @@
 		<!-- Forgot Password Modal -->
 		<view v-if="showForgotPasswordModal" class="modal">
 			<view class="modal-content">
-				<h3>Forgot Password</h3>
-				<p>Please contact:</p>
+				<h3>Tips</h3>
+				<p>Dear User, if you forget your password or need to register an accout, please contact Michael</p>
 				<view class="email-container">
 					<text class="email copy-icon" @click="copyEmail">qianxiaochuan23@shphschool.com</text>
 				</view>
@@ -84,6 +84,11 @@
 				uni.navigateTo({
 					url: '../userAgreement/userAgreement'
 				});
+			},
+			navigateToHome() {
+				uni.navigateTo({
+					url: "/pages/index/index"
+				})
 			}
 		}
 	}
@@ -270,6 +275,7 @@
 		justify-content: center;
 		align-items: center;
 		z-index: 1000;
+		
 	}
 
 	.modal-content {
@@ -279,6 +285,7 @@
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 		max-width: 80%;
 		text-align: center;
+		max-width: 400px;
 	}
 
 	.email-container {
@@ -302,10 +309,11 @@
 		margin-top: 15px;
 		background-color: #0f652c;
 		color: white;
-		border: none;
+		/* border: none; */
 		border-radius: 4px;
 		cursor: pointer;
-		padding: 0px 0px;
+		font-size: 16px;
+		/* padding: 0px 0px; */
 		/* Add this line to give some padding to the button */
 	}
 
@@ -322,7 +330,7 @@
 		font-weight: bold;
 	}
 
-	.user-agreement text:hover {
+	.user-agreement-text :hover {
 		text-decoration: underline;
 	}
 

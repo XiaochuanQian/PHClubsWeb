@@ -166,6 +166,7 @@
 			justify-content: space-between;
 			text-align: right;
 		}
+		
 
 		.content {
 			padding: 20px;
@@ -180,19 +181,23 @@
 		.nav-item {
 			margin: 5px 0;
 		}
+		.nav-item1 {
+			margin-top: 10px;
+		}
 	}
 
 	.login-btn {
-		background-color: #4CAF50;
+		background-color: #0f652c;
 		color: white;
 		padding: 8px 15px;
 		border-radius: 5px;
 		cursor: pointer;
 		transition: background-color 0.3s;
+		margin-top: 40;
 	}
 
 	.login-btn:hover {
-		background-color: #45a049;
+		background-color: #0f652c;
 	}
 
 	.logo-container {

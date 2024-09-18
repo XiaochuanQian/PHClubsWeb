@@ -70,7 +70,8 @@
     },
     "vueVersion" : "3",
     "h5" : {
-        "title" : "PH Clubs"
+        "title" : "PH Clubs",
+        "template" : "index.html"
     },
     "locale" : "en"
 }

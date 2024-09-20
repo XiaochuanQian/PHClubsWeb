@@ -39,7 +39,7 @@ This project is developed on the uni-app framework.
 3. Open folder with HbuilderX
 4. Run the project
 
-### Method 2: Run with Uni-CLI
+### Method 2: Run with vue-cli
 
 1. Clone this Repo
    

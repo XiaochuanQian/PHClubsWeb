@@ -2,8 +2,8 @@
 	<view class="container">
 		<view class="header">
 			<view class="back-button" @click="goBack">
-				<text class="back-text">Back</text>
-
+				<!-- <text class="back-text">Back</text> -->
+				<view class="iconfont icon-Import"></view>
 			</view>
 			<text class="header-title">User Agreement</text>
 		</view>
@@ -81,15 +81,13 @@
 		display: flex;
 		align-items: center;
 		cursor: pointer;
-		border-radius: 5px;
-		padding: 5px;
-		background-color: white;
+		/* border-radius: 5px; */
+		padding: 6px;
+		/* background-color: ; */
+		color: white;
+		
 	}
 
-	.back-icon {
-		font-size: 20px;
-		margin-right: 5px;
-	}
 
 	.back-text {
 		font-size: 16px;

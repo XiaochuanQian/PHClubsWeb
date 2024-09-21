@@ -1,34 +1,41 @@
 <template>
   <view class="user-profile">
-    <h2>Welcome {{ user.englishName }}</h2>
-    <view class="user-info">
-      <view class="info-row">
-        <p><strong>Student ID:</strong> {{ user.studentId }}</p>
-        <button class="copy-btn" @click="copyToClipboard(user.studentId)">Copy</button>
-      </view>
-      <p><strong>Password:</strong> ••••••••</p>
-      <view class="info-row">
-        <p><strong>Grade:</strong> {{ user.grade }}</p>
-        <button class="copy-btn" @click="copyToClipboard(user.grade)">Copy</button>
-      </view>
-      <view class="info-row">
-        <p><strong>Chinese Name:</strong> {{ user.chineseName }}</p>
-        <button class="copy-btn" @click="copyToClipboard(user.chineseName)">Copy</button>
-      </view>
-      <view class="info-row">
-        <p><strong>English Name:</strong> {{ user.englishName }}</p>
-        <button class="copy-btn" @click="copyToClipboard(user.englishName)">Copy</button>
-      </view>
-      <p><strong>Role:</strong> {{ user.role }}</p>
-      <p><strong>Last Login:</strong> {{ user.lastLogin }}</p>
+    <view class="profile-header">
+      <text class="welcome-text">{{ user.englishName }}'s Profile</text>
     </view>
-    <button class="deregister-btn" @click="deregister">Deregister</button>
+    <view class="profile-content">
+      <view v-for="(item, index) in userInfo" :key="index" class="info-item">
+        <view class="info-label">
+          <text class="label-text">{{ item.label }}</text>
+        </view>
+        <view class="info-value">
+          <text class="value-text">{{ item.value }}</text>
+          <view class="copy-btn-container">
+			<view v-if="item.copyable" @click="copyToClipboard(item.value)" class="iconfont icon-file-copy copy-btn"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="profile-footer">
+      <text class="deregister-text" @click="showDeregisterModal">Deregister</text>
+    </view>
+
+    <!-- Deregister Confirmation Modal -->
+    <uni-popup ref="deregisterPopup" type="dialog">
+      <uni-popup-dialog
+        type="warning"
+        cancelText="Cancel"
+        confirmText="Confirm"
+        title="Confirm Deregistration"
+        content="Are you sure you want to deregister? This action cannot be undone."
+        @confirm="handleDeregister"
+      ></uni-popup-dialog>
+    </uni-popup>
   </view>
 </template>
 
 <script>
 export default {
-  name: 'UserProfile',
   data() {
     return {
       user: {
@@ -38,82 +45,134 @@ export default {
         englishName: 'John Doe',
         role: 'Student',
         lastLogin: '2023-09-18 14:30:00'
-      }
+      },
+      userInfo: [
+        { label: 'Student ID', value: '12345678', copyable: true },
+        { label: 'Password', value: '••••••••', copyable: false },
+        { label: 'Grade', value: '11', copyable: true },
+        { label: 'Chinese Name', value: '张三', copyable: true },
+        { label: 'English Name', value: 'John Doe', copyable: true },
+        { label: 'Role', value: 'Student', copyable: false },
+        { label: 'Last Login', value: '2023-09-18 14:30:00', copyable: false }
+      ]
     }
   },
   methods: {
-    deregister() {
-      // Implement deregister logic here
-      console.log('Deregister clicked')
-    },
     copyToClipboard(text) {
-      // Using the Clipboard API
-      navigator.clipboard.writeText(text).then(() => {
-        // You can add a notification here to inform the user that the text was copied
-        console.log('Text copied to clipboard');
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
+      uni.setClipboardData({
+        data: text,
+        success: () => {
+          // uni.showToast({
+          //   title: 'Copied to clipboard',
+          //   icon: 'success',
+          //   duration: 2000
+          // });
+        },
+		showToast:false
       });
+    },
+    showDeregisterModal() {
+      this.$refs.deregisterPopup.open();
+    },
+    handleDeregister() {
+      // Implement deregister logic here
+      console.log('User confirmed deregistration');
+      // After deregistration logic, close the popup
+      this.$refs.deregisterPopup.close();
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
 .user-profile {
-  max-width: 600px;
-  margin: 0 auto;
   padding: 20px;
+  background-color: #ffffff;
 }
 
-h2 {
-  color: #0f652c;
-  margin-bottom: 20px;
+.profile-header {
+  padding: 20px 0;
+  border-bottom: 2px solid #f0f0f0;
 }
 
-.user-info {
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+.welcome-text {
+  color: #333333;
+  font-size: 24px;
+  font-weight: bold;
 }
 
-.info-row {
+.profile-content {
+  padding-top: 20px;
+  padding-bottom: 2px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  min-height: 35px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* .info-item:last-child {
+  border-bottom: none;
+} */
+
+.info-label {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.label-text {
+  font-weight: bold;
+  color: #666666;
+  font-size: 14px;
+}
+
+.info-value {
+  flex-grow: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
 }
 
-.info-row p {
-  margin: 0;
+.value-text {
+  color: #333333;
+  font-size: 16px;
+}
+
+.copy-btn-container {
+  width: 60px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .copy-btn {
-  background-color: #0f652c;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.copy-btn:hover {
-  background-color: #0a4a1f;
-}
-
-.deregister-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 20px;
+  /* background-color: #f0f0f0; */
+  color: #333333;
+  padding: 0px 15px;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 20px;
 }
 
-.deregister-btn:hover {
-  background-color: #c82333;
+.copy-btn:active {
+	font-size: 21px;
+}
+
+.profile-footer {
+  margin-top: 0px;
+  display: flex;
+  justify-content: right;
+}
+
+.deregister-text {
+  color: #0f652c;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.deregister-text :hover {
+	text-decoration: underline;
 }
 </style>

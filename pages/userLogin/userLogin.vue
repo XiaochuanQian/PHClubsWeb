@@ -94,7 +94,8 @@
 					},
 					fail: (err) => {
 						console.error('Failed to copy email:', err);
-					}
+					},
+					showToast:false
 				});
 			},
 			navigateToUserAgreement() {

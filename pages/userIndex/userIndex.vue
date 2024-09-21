@@ -3,10 +3,10 @@
     <view :class="['dock', { 'collapsed': isDockCollapsed, 'mobile': isMobile }]">
       <view v-if="!isMobile || !isDockCollapsed" class="user-info">
         <image class="avatar-image" src="/static/person.circle.fill.png" mode="aspectFit"></image>
-        <text class="name-text">John Doe</text>
+        <text class="name-text" @click="switchPage('Profile')">John Doe</text>
       </view>
       <view :class="['nav', { 'mobile': isMobile }]">
-		<text v-if="isDockCollapsed" class="name-text">John Doe</text>
+        <text v-if="isDockCollapsed" class="name-text" @click="switchPage('Profile')">John Doe</text>
         <text :class="['nav-item', currentPage === 'PersonalData' ? 'active' : '']"
           @click="switchPage('PersonalData')">Personal Data</text>
         <text :class="['nav-item', currentPage === 'Overview' ? 'active' : '']"
@@ -34,11 +34,13 @@
 <script>
 import PersonalDataForm from '../userPersonalData/userPersonalData.vue'
 import DashboardOverview from '../userOverview/userOverview.vue'
+import Profile from '../userProfile/userProfile.vue'
 
 export default {
   components: {
     PersonalData: PersonalDataForm,
-    Overview: DashboardOverview
+    Overview: DashboardOverview,
+    Profile: Profile,
   },
   data() {
     return {
@@ -50,10 +52,8 @@ export default {
   methods: {
     switchPage(page) {
       this.currentPage = page
-      // 移除自动收缩菜单的逻辑
     },
     logout() {
-      // Implement logout logic here
       console.log('Logout clicked')
     },
     toggleDock() {
@@ -77,11 +77,11 @@ export default {
 </script>
 
 <style>
-/* 保持之前的样式不变 */
 .container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
 .container.mobile {
@@ -96,6 +96,7 @@ export default {
   flex-direction: column;
   padding: 20px;
   transition: all 0.3s ease;
+  overflow-y: auto;
 }
 
 .dock.collapsed:not(.mobile) {
@@ -135,6 +136,7 @@ export default {
   font-size: 20px;
   font-weight: bold;
   color: #0f652c;
+  cursor: pointer;
 }
 
 .nav {
@@ -241,13 +243,13 @@ export default {
 
 .mobile-toggle {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 10px;
+  right: 10px;
   background-color: #0f652c;
   color: white;
   border: none;
   border-radius: 30px;
-  padding: 10px 20px;
+  padding: 0px 15px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
@@ -275,12 +277,12 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-@media screen and (max-width: 768px) {
-	.user-info {
-	  display: flex;
-	  align-items: center;
-	  margin-bottom: 5px;
-	}
-}
 
+@media screen and (max-width: 768px) {
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+}
 </style>

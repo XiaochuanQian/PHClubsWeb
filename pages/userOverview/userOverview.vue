@@ -1,93 +1,101 @@
-<!-- TODO: Optimize for Mobile View -->
-
 <template>
-	<view class="user-overview">
-		<scroll-view scroll-y class="club-list">
-			<view v-for="category in clubCategories" :key="category.id" class="category">
-				<text class="category-name">{{ category.category_name }}</text>
-				<view v-for="club in category.clubs" :key="club.id" @tap="selectClub(club.id)"
-					:class="['club-item', { active: selectedClubId === club.id }]">
-					<text>{{ club.club_name }}</text>
-				</view>
-			</view>
-		</scroll-view>
-		<scroll-view scroll-y class="club-info" v-if="selectedClub">
-			<view class="club-header">
-				<image :src="selectedClub.club_bg_img" mode="aspectFill" class="club-bg-img"></image>
-				<view class="club-title">
-					<text class="club-name">{{ selectedClub.club_name }}</text>
-					<view class="club-status">
-						<text
-							:class="['status-badge', selectedClub.club_status.toLowerCase()]">{{ selectedClub.club_status }}</text>
-						<text class="star-rating">⭐ {{ selectedClub.star }}</text>
+	<view class="user-overview" :class="{ 'mobile': isMobile }">
+		<view class="club-list-container" v-if="!isMobile || (isMobile && !selectedClub)">
+			<input v-model="searchQuery" placeholder="Search clubs" class="search-input" @input="searchClubs" />
+			<scroll-view scroll-y class="club-list">
+				<view v-for="category in filteredClubCategories" :key="category.id" class="category">
+					<text class="category-name">{{ category.category_name }}</text>
+					<view v-for="club in category.clubs" :key="club.id" @tap="selectClub(club.id)"
+						:class="['club-item', { active: selectedClubId === club.id }]">
+						<text>{{ club.club_name }}</text>
 					</view>
 				</view>
-			</view>
-
-			<view class="info-section">
-				<text class="section-title">President</text>
-				<view v-for="president in selectedClub.president" :key="president.eng_name" class="president-info">
-					<text class="president-name">{{ president.chi_name }} ({{ president.eng_name }})</text>
-					<text class="president-grade">Grade {{ president.grade }}</text>
+			</scroll-view>
+		</view>
+		<view class="club-info" v-if="selectedClub" :class="{ 'mobile': isMobile }">
+			
+			<scroll-view scroll-y class="club-details-scroll">
+				<view v-if="isMobile" class="back-button" @tap="goBack">
+					<text>← Back to Categories</text>
 				</view>
-			</view>
-
-			<view class="info-section">
-				<text class="section-title">Club Background\n</text>
-				<text class="info-text"> - Established: {{ selectedClub.club_background.establish_time }}</text>
-			</view>
-
-			<view class="info-section">
-				<text class="section-title">Learning Objectives</text>
-				<view v-for="objective in selectedClub.learning_objectives" :key="objective" class="info-item">
-					<text class="info-text"> - {{ objective }}</text>
+				<view class="club-header">
+					<image :src="selectedClub.club_bg_img" mode="aspectFill" class="club-bg-img"></image>
+					<view class="club-title">
+						<text class="club-name">{{ selectedClub.club_name }}</text>
+						<view class="club-status">
+							<text
+								:class="['status-badge', selectedClub.club_status.toLowerCase()]">{{ selectedClub.club_status }}</text>
+							<text class="star-rating">⭐ {{ selectedClub.star }}</text>
+						</view>
+					</view>
 				</view>
-			</view>
 
-			<view class="info-section">
-				<text class="section-title">For Whom</text>
-				<view v-for="forWhom in selectedClub.for_whom" :key="forWhom" class="info-item">
-					<text class="info-text"> - {{ forWhom }}</text>
+				<view class="info-section">
+					<text class="section-title">President</text>
+					<view v-for="president in selectedClub.president" :key="president.eng_name" class="president-info">
+						<text class="president-name">{{ president.chi_name }} ({{ president.eng_name }})</text>
+						<text class="president-grade">Grade {{ president.grade }}</text>
+					</view>
 				</view>
-			</view>
 
-			<view class="info-section">
-				<text class="section-title">Meeting Schedule</text>
-				<view class="schedule-info">
-					<text class="info-text"> - Frequency: {{ selectedClub.meeting_schedule.frequency }}\n</text>
-					<text class="info-text"> - Day: {{ selectedClub.meeting_schedule.day }}\n</text>
-					<text class="info-text"> - Location: {{ selectedClub.meeting_schedule.location }}</text>
+				<view class="info-section">
+					<text class="section-title">Club Background</text>
+					<text class="info-text">Established: {{ selectedClub.club_background.establish_time }}</text>
 				</view>
-				<text class="sub-section-title">Requirements</text>
-				<view v-for="requirement in selectedClub.meeting_schedule.requirements" :key="requirement"
-					class="info-item">
-					<text class="info-text"> - {{ requirement }}</text>
-				</view>
-			</view>
 
-			<view class="info-section">
-				<text class="section-title">Past Projects</text>
-				<view v-for="project in selectedClub.exp_past_projects" :key="project" class="info-item">
-					<text class="info-text"> - {{ project }}</text>
+				<view class="info-section">
+					<text class="section-title">Learning Objectives</text>
+					<view v-for="objective in selectedClub.learning_objectives" :key="objective" class="info-item">
+						<text class="info-text">• {{ objective }}</text>
+					</view>
 				</view>
-			</view>
 
-			<view class="info-section">
-				<text class="section-title">Join Benefits</text>
-				<view v-for="benefit in selectedClub.join_benefits" :key="benefit" class="info-item">
-					<text class="info-text"> - {{ benefit }}</text>
+				<view class="info-section">
+					<text class="section-title">For Whom</text>
+					<view v-for="forWhom in selectedClub.for_whom" :key="forWhom" class="info-item">
+						<text class="info-text">• {{ forWhom }}</text>
+					</view>
 				</view>
-			</view>
 
-			<view class="info-section">
-				<text class="section-title">Contact Information</text>
-				<view v-for="contact in selectedClub.contact_information" :key="contact.eng_name" class="contact-info">
-					<text class="info-text">Name: {{ contact.eng_name }}\n</text>
-					<text class="info-text"> - Email: {{ contact.email }}\n</text>
-					<text class="info-text"> - WeChat ID: {{ contact.wechat_id }}</text>
+				<view class="info-section">
+					<text class="section-title">Meeting Schedule</text>
+					<view class="schedule-info">
+						<text class="info-text">Frequency: {{ selectedClub.meeting_schedule.frequency }}</text>
+						<text class="info-text">Day: {{ selectedClub.meeting_schedule.day }}</text>
+						<text class="info-text">Location: {{ selectedClub.meeting_schedule.location }}</text>
+					</view>
+					<text class="sub-section-title">Requirements</text>
+					<view v-for="requirement in selectedClub.meeting_schedule.requirements" :key="requirement"
+						class="info-item">
+						<text class="info-text">• {{ requirement }}</text>
+					</view>
 				</view>
-			</view>
-		</scroll-view>
+
+				<view class="info-section">
+					<text class="section-title">Past Projects</text>
+					<view v-for="project in selectedClub.exp_past_projects" :key="project" class="info-item">
+						<text class="info-text">• {{ project }}</text>
+					</view>
+				</view>
+
+				<view class="info-section">
+					<text class="section-title">Join Benefits</text>
+					<view v-for="benefit in selectedClub.join_benefits" :key="benefit" class="info-item">
+						<text class="info-text">• {{ benefit }}</text>
+					</view>
+				</view>
+
+				<view class="info-section">
+					<text class="section-title">Contact Information</text>
+					<view v-for="contact in selectedClub.contact_information" :key="contact.eng_name"
+						class="contact-info">
+						<text selectable class="info-text">Name: {{ contact.eng_name }}\n</text>
+						<text selectable class="info-text">Email: {{ contact.email }}\n</text>
+						<text selectable class="info-text">WeChat ID: {{ contact.wechat_id }}</text>
+					</view>
+				</view>
+			</scroll-view>
+		</view>
 	</view>
 </template>
 
@@ -656,6 +664,9 @@
 				],
 				selectedClubId: null,
 				selectedClub: null,
+				searchQuery: '',
+				filteredClubCategories: [],
+				isMobile: false
 			};
 		},
 		methods: {
@@ -702,22 +713,56 @@
 						"A chance to have a private room and free chatting."
 					],
 					"contact_information": [{
-						"eng_name": "Megan ",
-						"email": "sunmengmeng22@shphschool.com",
-						"wechat_id": "okumula-070302LU"
-					},
-					{
-						"eng_name": "Test",
-						"email": "q@q",
-						"wechat_id": "aaa"
-					}
-					
+							"eng_name": "Megan ",
+							"email": "sunmengmeng22@shphschool.com",
+							"wechat_id": "okumula-070302LU"
+						},
+						{
+							"eng_name": "Test",
+							"email": "q@q",
+							"wechat_id": "aaa"
+						}
+
 					]
-				
+
 				};
+				if (this.isMobile) {
+					// Hide the category list on mobile when a club is selected
+					this.showCategories = false;
+				}
 
 			},
+			searchClubs() {
+				const query = this.searchQuery.toLowerCase();
+				this.filteredClubCategories = this.clubCategories.map(category => {
+					return {
+						...category,
+						clubs: category.clubs.filter(club =>
+							club.club_name.toLowerCase().includes(query)
+						)
+					};
+				}).filter(category => category.clubs.length > 0);
+			},
+			goBack() {
+				this.selectedClub = null;
+				this.selectedClubId = null;
+			},
+			checkMobile() {
+				// Use uni-app's way to get system info
+				const systemInfo = uni.getSystemInfoSync();
+				this.isMobile = systemInfo.windowWidth <= 768;
+			}
 		},
+		mounted() {
+			this.filteredClubCategories = this.clubCategories;
+			this.checkMobile();
+			// You might need to use a different approach to listen for resize events in uni-app
+			window.addEventListener('resize', this.checkMobile);
+		},
+		beforeDestroy() {
+			// Remove event listener
+			window.removeEventListener('resize', this.checkMobile);
+		}
 	};
 </script>
 
@@ -729,28 +774,63 @@
 
 	.user-overview {
 		display: flex;
-		height: 100%;
+		height: 100vh;
 		background-color: #f5f5f5;
 		overflow: hidden;
 	}
 
-	.club-list {
-		width: 300px;
+	.user-overview.mobile {
+		flex-direction: column;
+	}
+
+	.club-list-container {
+		display: flex;
+		flex-direction: column;
+		width: 320px;
 		height: 100%;
 		background-color: #ffffff;
-		box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+		z-index: 10;
+	}
+
+	.search-input {
+		margin: 10px;
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		font-size: 14px;
+	}
+
+	.club-list {
+		flex: 1;
+		overflow-y: auto;
 	}
 
 	.club-info {
 		flex: 1;
 		height: 100%;
-		padding: 20px;
 		background-color: #ffffff;
+		overflow: hidden;
+	}
+
+	.club-info.mobile {
+		width: 100%;
+		height: 100vh;
+	}
+
+	.club-details-scroll {
+		height: 100vh;
 		overflow-y: auto;
 	}
 
-	.category {
+	.back-button {
 		padding: 10px;
+		background-color: #f0f0f0;
+		font-weight: bold;
+		cursor: pointer;
+	}
+
+	.category {
+		padding: 5px;
 	}
 
 	.category-name {
@@ -758,12 +838,13 @@
 		font-size: 16px;
 		color: #333;
 		margin: 10px 0;
+		padding: 0 10px;
 	}
 
 	.club-item {
 		padding: 10px;
 		margin: 5px 0;
-		border-radius: 5px;
+		border-radius: 3px;
 		transition: background-color 0.3s;
 	}
 
@@ -779,13 +860,11 @@
 
 	.club-header {
 		position: relative;
-		margin-bottom: 20px;
 	}
 
 	.club-bg-img {
 		width: 100%;
-		height: 200px;
-		border-radius: 10px;
+		height: 220px;
 	}
 
 	.club-title {
@@ -793,9 +872,8 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 		padding: 20px;
-		border-radius: 0 0 10px 10px;
+		background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 	}
 
 	.club-name {
@@ -830,10 +908,13 @@
 
 	.info-section {
 		background-color: #ffffff;
-		border-radius: 10px;
 		padding: 15px;
-		margin-bottom: 20px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		margin-bottom: 10px;
+		border-bottom: 1px solid #e8e8e8;
+	}
+
+	.info-section:last-child {
+		border-bottom: none;
 	}
 
 	.section-title {
@@ -855,7 +936,7 @@
 	}
 
 	.info-text {
-		font-size: 14px;
+		font-size: 15px;
 		color: #333;
 		line-height: 1.5;
 	}
@@ -884,6 +965,53 @@
 		padding: 10px;
 		border-radius: 5px;
 		margin-top: 10px;
-		user-select: text;
+	}
+
+	@media screen and (max-width: 768px) {
+
+		.club-list-container,
+		.club-info.mobile {
+			width: 100%;
+			height: 100vh;
+		}
+
+		.search-input {
+			font-size: 14px;
+			padding: 10px;
+		}
+
+		.category-name {
+			font-size: 20px;
+		}
+
+		.club-item {
+			padding: 15px;
+			font-size: 17px;
+		}
+
+		.club-name {
+			font-size: 22px;
+		}
+
+		.section-title {
+			font-size: 18px;
+		}
+
+		.info-text {
+			font-size: 14px;
+		}
+
+		.club-bg-img {
+			height: 180px;
+		}
+
+		.president-info {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.president-grade {
+			margin-top: 5px;
+		}
 	}
 </style>

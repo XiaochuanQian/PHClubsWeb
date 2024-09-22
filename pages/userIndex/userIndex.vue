@@ -214,13 +214,15 @@ export default {
 
 .content {
   flex: 1;
-  padding: 40px;
+  /* padding: 20px; */
+  padding-left: 30px;
   overflow-y: auto;
   position: relative;
 }
 
 .content.mobile {
-  padding: 20px;
+  /* padding: 20px; */
+  padding: 0;
 }
 
 .collapse-btn {
@@ -257,6 +259,7 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
 .mobile-toggle:hover {

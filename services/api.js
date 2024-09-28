@@ -1,21 +1,33 @@
 // src/services/api.js
 
+import { setUserInfo } from '../utils/auth'
 import {
 	setToken,
 	getToken,
 	removeToken
 } from '../utils/storage'
 
-const BASE_URL = 'http://101.34.211.174'
+// const BASE_URL = 'http://101.34.211.174'
+
+// const BASE_URL = 'http://localhost:5173/api'
+const BASE_URL = 'http://101.34.211.174' // 生产环境使用实际的 URL
 
 // 请求拦截器
 const requestInterceptor = (config) => {
 	const token = getToken()
+	
 	if (token) {
-		config.header = {
-			...config.header,
-			'Authorization': `Bearer ${token}`
-		}
+		console.log(config)
+		if (1) { //config.method.toUpperCase() === 'GET'
+			config.url = `${config.url}?token=${token}`
+			console.log(config.url)
+		} 
+		// else {
+		// 	config.data = {
+		// 		...config.data,
+		// 		token: token
+		// 	}
+		// }
 	}
 	return config
 }
@@ -27,13 +39,15 @@ const request = (options) => {
 		uni.request({
 			...interceptedOptions,
 			success: (res) => {
-				if (res.statusCode === 200 && res.data.code === 0) {
+				console.log(res)
+				if (res.statusCode === 200) { //removed res.data.code === "0" because of backend issues
 					resolve(res.data)
 				} else {
 					reject(res.data)
 				}
 			},
 			fail: (err) => {
+				console.log("no")
 				reject(err)
 			}
 		})
@@ -44,22 +58,20 @@ export const api = {
 	// 学生相关接口
 	student: {
 		login: (stuId, password) => {
-			const formData = new FormData()
-			formData.append('stu_id', stuId)
-			formData.append('password', password)
-			for (let [key, value] of formData.entries()) {
-			        console.log(key, value)
-			    }
 			return request({
 				url: `${BASE_URL}/student/login`,
 				method: 'POST',
-				data: formData,
+				data: {
+					stu_id: stuId,
+					password: password
+				},
 				header: {
-					'Content-Type': 'multipart/form-data'
+					'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			}).then(response => {
 				if (response.data && response.data.api_token) {
 					setToken(response.data.api_token)
+					setUserInfo(response.data)
 				}
 				return response
 			})
@@ -321,7 +333,17 @@ export const api = {
 				url: `${BASE_URL}/club/president-club`,
 				method: 'POST'
 			})
-		}
+		},
+		getClubDetail: (clubId) => {
+			return request({
+				url: `${BASE_URL}/club/detail`,
+				method: 'POST',
+				data: { club_id: clubId },
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
+				}
+			})
+		},
 	},
 
 	// 社团分类相关接口
@@ -331,6 +353,7 @@ export const api = {
 				url: `${BASE_URL}/club-category/index`,
 				method: 'GET'
 			})
-		}
+		},
+
 	}
 }

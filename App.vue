@@ -1,7 +1,10 @@
 <script>
+	import { isAuthenticated } from './utils/auth'
+
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			
 		},
 		onShow: function() {
 			console.log('App Show')

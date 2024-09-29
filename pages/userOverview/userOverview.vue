@@ -27,6 +27,9 @@
 								:class="['status-badge', selectedClub.club_status.toLowerCase()]">{{ selectedClub.club_status }}</text>
 							<text class="star-rating">⭐ {{ selectedClub.star }}</text>
 						</view>
+						<button class="joinClub-button" @click="handleJoinClub" :disabled="selectedClub.is_member === 1">
+							{{ selectedClub.is_member === 1 ? 'Already Joined' : 'Join Club' }}
+						</button>
 					</view>
 				</view>
 
@@ -37,15 +40,17 @@
 						<text class="president-grade">Grade {{ president.grade }}</text>
 					</view>
 				</view>
-				
+
 				<view class="info-section">
 					<text class="section-title">Vice President</text>
-					<view v-for="vice_president in selectedClub.vice_president" :key="vice_president.eng_name" class="president-info">
-						<text class="president-name">{{ vice_president.chi_name }} ({{ vice_president.eng_name }})</text>
+					<view v-for="vice_president in selectedClub.vice_president" :key="vice_president.eng_name"
+						class="president-info">
+						<text class="president-name">{{ vice_president.chi_name }}
+							({{ vice_president.eng_name }})</text>
 						<text class="president-grade">Grade {{ vice_president.grade }}</text>
 					</view>
 				</view>
-				
+
 				<view class="info-section">
 					<text class="section-title">Club Background</text>
 					<text class="info-text">Established: {{ selectedClub.club_background.establish_time }}</text>
@@ -108,7 +113,10 @@
 </template>
 
 <script>
-	import { api } from '../../services/api.js'
+	import {
+		api
+	} from '../../services/api.js'
+import { getUserInfo } from '../../utils/auth.js';
 	export default {
 		data() {
 			return {
@@ -117,41 +125,75 @@
 				selectedClub: null,
 				searchQuery: '',
 				filteredClubCategories: [],
-				isMobile: false
+				isMobile: false,
 			};
 		},
 		methods: {
 			async loadClubCategories() {
-			  try {
-			    const response = await api.clubCategory.index();
-				
-			    if (response.code === "0" && response.msg === "ok") {
-			      this.clubCategories = response.data;
-			      this.filteredClubCategories = this.clubCategories;
-			    } else {
-			      console.error('Failed to load club categories:', response.msg);
-			    }
-			  } catch (error) {
-			    console.error('Error loading club categories:', error);
-				
-			  }
+				try {
+					const response = await api.clubCategory.index();
+
+					if (response.code === "0" && response.msg === "ok") {
+						this.clubCategories = response.data;
+						this.filteredClubCategories = this.clubCategories;
+					} else {
+						console.error('Failed to load club categories:', response.msg);
+					}
+				} catch (error) {
+					console.error('Error loading club categories:', error);
+
+				}
 			},
 			async selectClub(clubId) {
-			  this.selectedClubId = clubId;
-			  console.log(clubId);
-			  try {
-			    const response = await api.club.getClubDetail(clubId);
-			    if (response.code === "0" && response.msg === "ok") {
-			      this.selectedClub = response.data;
-			    } else {
-			      console.error('Failed to load club details:', response.msg);
-			    }
-			  } catch (error) {
-			    console.error('Error loading club details:', error);
-			  }
-			  if (this.isMobile) {
-			    this.showCategories = false;
-			  }
+				this.selectedClubId = clubId;
+				console.log(clubId);
+				try {
+					const response = await api.club.getClubDetail(clubId);
+					if (response.code === "0" && response.msg === "ok") {
+						this.selectedClub = response.data;
+					} else {
+						console.error('Failed to load club details:', response.msg);
+					}
+				} catch (error) {
+					console.error('Error loading club details:', error);
+				}
+				if (this.isMobile) {
+					this.showCategories = false;
+				}
+			},
+			async handleJoinClub() {
+				if (this.selectedClub.isMember === 1) {
+					// User is already a member, do nothing
+					return;
+				}
+
+				try {
+					const userInfo = getUserInfo()
+					// Call the API to join the club
+					const response = await api.clubMember.add(this.selectedClubId, userInfo.stu_id);
+					console.log(this.selectedClubId)
+
+					if (response.code === "0" && response.msg === "Add successfully") {
+						// Successfully joined the club
+						this.selectedClub.is_member = 1;
+						uni.showToast({
+							title: 'Successfully joined the club!',
+							icon: 'success'
+						});
+					} else {
+						// Failed to join the club
+						uni.showToast({
+							title: 'Failed to join the club. Please try again.',
+							icon: 'none'
+						});
+					}
+				} catch (error) {
+					console.error('Error joining club:', error);
+					uni.showToast({
+						title: 'An error occurred. Please try again.',
+						icon: 'none'
+					});
+				}
 			},
 			searchClubs() {
 				const query = this.searchQuery.toLowerCase();
@@ -296,19 +338,26 @@
 		right: 0;
 		padding: 20px;
 		background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.club-name {
 		font-size: 24px;
 		font-weight: bold;
 		color: #ffffff;
+		margin-right: 10px;
 	}
 
 	.club-status {
 		display: flex;
 		align-items: center;
-		margin-top: 5px;
+		flex-grow: 1;
 	}
+
+
 
 	.status-badge {
 		padding: 3px 8px;
@@ -326,6 +375,28 @@
 	.star-rating {
 		color: #faad14;
 		font-size: 14px;
+	}
+
+	.joinClub-button {
+		background-color: #0f652c;
+		color: white;
+		font-weight: bold;
+		border: none;
+		border-radius: 5px;
+		padding: 0px 10px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		margin-left: auto;
+	}
+
+	.joinClub-button:hover {
+		background-color: #0a4a1f;
+	}
+
+	.joinClub-button:disabled {
+		background-color: #cccccc;
+		cursor: not-allowed;
 	}
 
 	.info-section {

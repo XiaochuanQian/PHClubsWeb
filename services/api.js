@@ -168,6 +168,9 @@ export const api = {
 				data: {
 					club_id: clubId,
 					stu_id: stuId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},

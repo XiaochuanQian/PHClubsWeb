@@ -37,7 +37,15 @@
 						<text class="president-grade">Grade {{ president.grade }}</text>
 					</view>
 				</view>
-
+				
+				<view class="info-section">
+					<text class="section-title">Vice President</text>
+					<view v-for="vice_president in selectedClub.vice_president" :key="vice_president.eng_name" class="president-info">
+						<text class="president-name">{{ vice_president.chi_name }} ({{ vice_president.eng_name }})</text>
+						<text class="president-grade">Grade {{ vice_president.grade }}</text>
+					</view>
+				</view>
+				
 				<view class="info-section">
 					<text class="section-title">Club Background</text>
 					<text class="info-text">Established: {{ selectedClub.club_background.establish_time }}</text>

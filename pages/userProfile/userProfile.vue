@@ -20,6 +20,13 @@
 		<view class="profile-footer">
 			<text class="deregister-text" @click="showDeregisterModal">Deregister</text>
 		</view>
+		<view class="logo-container">
+			<image class="logo-image" src="/static/ph_club_logo_full.png" mode="aspectFit"></image>
+			<text class="logo-text">PH Clubs {{webVerison}}</text>
+		</view>
+		<view class="user-agreement-link">
+			<text class="user-agreement-text" @click="navigateToUserAgreement">User Agreement</text>
+		</view>
 
 		<!-- Deregister Confirmation Modal -->
 		<uni-popup ref="deregisterPopup" type="dialog">
@@ -37,6 +44,7 @@
 	export default {
 		data() {
 			return {
+				webVerison : "0.1.0",
 				user: {
 					studentId: '12345678',
 					grade: '11',
@@ -123,33 +131,36 @@
 				console.log('User confirmed deregistration');
 				// After deregistration logic, close the popup
 				this.$refs.deregisterPopup.close();
+			},
+			navigateToUserAgreement() {
+				uni.navigateTo({
+					url: '../userAgreement/userAgreement?showWeb=true'
+				});
 			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 	.user-profile {
 		padding: 20px;
 		background-color: #ffffff;
 	}
-
 	.profile-header {
 		padding: 20px 0;
 		border-bottom: 2px solid #f0f0f0;
 	}
-
 	.welcome-text {
 		color: #333333;
 		font-size: 24px;
 		font-weight: bold;
+		text-align: center;
+		margin-top: 20px;
 	}
-
 	.profile-content {
 		padding-top: 20px;
 		padding-bottom: 2px;
 	}
-
 	.info-item {
 		display: flex;
 		align-items: center;
@@ -157,66 +168,83 @@
 		min-height: 35px;
 		border-bottom: 1px solid #f0f0f0;
 	}
-
-	/* .info-item:last-child {
-  border-bottom: none;
-} */
-
 	.info-label {
 		width: 120px;
 		flex-shrink: 0;
 	}
-
 	.label-text {
 		font-weight: bold;
 		color: #666666;
 		font-size: 14px;
 	}
-
 	.info-value {
 		flex-grow: 1;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
-
 	.value-text {
 		color: #333333;
 		font-size: 16px;
 	}
-
 	.copy-btn-container {
 		width: 60px;
 		display: flex;
 		justify-content: flex-end;
 	}
-
 	.copy-btn {
-		/* background-color: #f0f0f0; */
 		color: #333333;
 		padding: 0px 15px;
 		border-radius: 5px;
 		font-size: 20px;
 	}
-
 	.copy-btn:active {
 		font-size: 21px;
 	}
-
 	.profile-footer {
-		margin-top: 0px;
+		margin-top: 20px;
 		display: flex;
-		justify-content: right;
+		justify-content: flex-end;
 	}
-
 	.deregister-text {
 		color: #0f652c;
 		cursor: pointer;
 		font-size: 14px;
 		font-weight: bold;
 	}
-
-	.deregister-text :hover {
+	.deregister-text:hover {
+		text-decoration: underline;
+	}
+	.logo-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 5px;
+	}
+	.logo-image {
+		width: 40px;
+		height: 40px;
+		margin-bottom: 3px;
+		margin-top: 20px;
+	}
+	.logo-text {
+		font-size: 12px;
+		font-weight: bold;
+		color: #0f652c;
+		text-align: center;
+	}
+	.user-agreement-link {
+		margin-top: 5px;
+		text-align: center;
+	}
+	.user-agreement-link text {
+		color: #0f652c;
+		font-size: 12px;
+		cursor: pointer;
+		font-weight: bold;
+	}
+	.user-agreement-text:hover {
 		text-decoration: underline;
 	}
 </style>

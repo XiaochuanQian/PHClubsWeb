@@ -14,14 +14,17 @@
 					<label for="password">Password:</label>
 					<input type="password" id="password" v-model="password" required>
 				</view>
-
+				<view v-if="errorMessage" class="error-message">
+				  {{ errorMessage }}
+				</view>
+				
+				<button @click="handleLogin" type="submit" class="login-btn">
+					 Log In
+				</button>
 				<view class="user-agreement">
 					<text>Login means you agree to the </text>
 					<text class="user-agreement-text" @click="navigateToUserAgreement">User Agreement</text>
 				</view>
-				<button @click="handleLogin" type="submit" class="login-btn">
-					 Log In
-				</button>
 			</form>
 			<view class="forgot-password">
 				<text @click="handleForgotPassword">Forgot Password?</text>
@@ -58,6 +61,7 @@
 				isLoading: false,
 				showForgotPasswordModal: false,
 				isCopied: false,
+				errorMessage: '',
 			}
 		},
 		methods: {
@@ -66,11 +70,18 @@
 				try {
 					const response = await api.student.login(this.studentId, this.password)
 					// 登录成功，token 已经被自动保存在 cookie 中
-					console.log('Login successful:', response)
+					console.log('Request successful:', response)
+					if (response.code == '4001') {
+						this.errorMessage = "Student Id or Password cannot be blank."
+					} else if (response.code == '1001') {
+						this.errorMessage = "Student Id or password incorrect."
+					} else {
+						uni.navigateTo({
+							url: '../userIndex/userIndex'
+						})
+					}
 					// 在这里处理登录成功后的逻辑，比如跳转到主页
-					uni.navigateTo({
-						url: '../userIndex/userIndex'
-					})
+					
 				} catch (error) {
 					// 处理登录失败
 					console.error('Login failed:', error)
@@ -191,6 +202,16 @@
 	input:focus {
 		border-color: #0f652c;
 		outline: none;
+	}
+	
+	.error-message {
+	  color: white;
+	  font-size: 14px;
+	  margin-top: 10px;
+	  text-align: center;
+	  background-color: #fd5257;
+	  padding: 10px 20px ; 
+	  border-radius: 5px;
 	}
 
 	.login-btn {
@@ -340,7 +361,8 @@
 	.user-agreement {
 		text-align: left;
 		font-size: 14px;
-		margin-bottom: 20px;
+		margin-bottom: 0px;
+		margin-top: 10px;
 	}
 
 	.user-agreement-text {

@@ -12,7 +12,6 @@ export const setToken = (value, days = 30) => {
 
 export const getToken = () => {
   const tokenStr = uni.getStorageSync(TOKEN_KEY)
-  console.log(tokenStr)
   if (tokenStr) {
     const tokenObj = JSON.parse(tokenStr)
     if (tokenObj.expiryTime > Date.now()) {

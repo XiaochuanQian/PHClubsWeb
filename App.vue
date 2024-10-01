@@ -1,13 +1,14 @@
 <script>
-	import { isAuthenticated } from './utils/auth'
-
+	import initPermission from './utils/guard'
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			initPermission()
 			
 		},
 		onShow: function() {
 			console.log('App Show')
+			initPermission()
 		},
 		onHide: function() {
 			console.log('App Hide')

@@ -1,10 +1,16 @@
 <template>
 	<view :class="['container', { 'mobile': isMobile }]">
 		<view :class="['dock', { 'collapsed': isDockCollapsed, 'mobile': isMobile }]">
-			<view v-if="!isMobile || !isDockCollapsed" class="user-info">
+			<view v-if="!isMobile || !isDockCollapsed" @click="switchPage('Profile')" class="user-info">
 				<image class="avatar-image" src="/static/person.circle.fill.png" mode="aspectFit"></image>
-				<text class="name-text" @click="switchPage('Profile')">{{engName}}</text>
+				<view class="user-details">
+					<text class="name-text">{{engName}}</text>
+					<text class="name-text">{{chiName}}</text>
+					<text class="info-text">{{stu_id}} | {{grade}} | {{role}}</text>
+				</view>
+
 			</view>
+
 			<view :class="['nav', { 'mobile': isMobile }]">
 				<text v-if="isDockCollapsed" class="name-text" @click="switchPage('Profile')">{{engName}}</text>
 				<text :class="['nav-item', currentPage === 'PersonalData' ? 'active' : '']"
@@ -12,8 +18,13 @@
 				<text :class="['nav-item', currentPage === 'Overview' ? 'active' : '']"
 					@click="switchPage('Overview')">Overview</text>
 			</view>
-			<view v-if="!isMobile || !isDockCollapsed" class="logout">
-				<text class="logout-btn" @click="logout">Logout</text>
+			<view v-if="!isMobile" class="logout"> <!-- || !isDockCollapsed -->
+				<!-- <text class="logout-btn" @click="logout">Logout</text> -->
+				<view class="dock-logo-container">
+					<image class="logo-image" src="/static/ph_club_logo_full.png" mode="aspectFit"></image>
+					<text class="logo-text">PH Clubs {{webVerison}}</text>
+				</view>
+				<a href="https://www.google.com" class="feedback-text">Tell us your thoughts!</a>
 			</view>
 		</view>
 		<view :class="['content', { 'mobile': isMobile }]">
@@ -31,11 +42,16 @@
 	</view>
 </template>
 
-<script>
+<script scoped>
 	import PersonalDataForm from '../userPersonalData/userPersonalData.vue'
 	import DashboardOverview from '../userOverview/userOverview.vue'
 	import Profile from '../userProfile/userProfile.vue'
-import { getUserInfo } from '../../utils/auth'
+	import {
+		getUserInfo
+	} from '../../utils/auth'
+	import {
+		api
+	} from '../../services/api.js'
 
 	export default {
 		components: {
@@ -48,7 +64,12 @@ import { getUserInfo } from '../../utils/auth'
 				currentPage: 'PersonalData',
 				isDockCollapsed: false,
 				isMobile: false,
-				engName: "JohnnyAppleSeed"
+				engName: "JohnnyAppleSeed",
+				chiName: "John",
+				role: "student",
+				grade: "11.6",
+				stu_id: "123456",
+				webVerison : "0.1.0",
 			}
 		},
 		methods: {
@@ -56,18 +77,20 @@ import { getUserInfo } from '../../utils/auth'
 				try {
 					const userInfo = getUserInfo()
 					this.engName = userInfo.eng_name
+					this.chiName = userInfo.chi_name
+					this.role = userInfo.role_name
+					this.stu_id = userInfo.stu_id
 				} catch (error) {
 					console.error('Failed to load user info:', error)
 					// Handle error (e.g., show error message to user)
 				}
-				
+
 			},
 			switchPage(page) {
 				this.currentPage = page
 			},
 			logout() {
-				clearAuth()
-				clearUserInfo()
+				api.student.logout()
 				uni.showToast({
 					title: '已退出登录',
 					icon: 'success'
@@ -84,7 +107,11 @@ import { getUserInfo } from '../../utils/auth'
 				if (this.isMobile && !this.isDockCollapsed) {
 					this.isDockCollapsed = true
 				}
+			},
+			navigateToFeedback() {
+				
 			}
+			
 		},
 		mounted() {
 			this.checkMobile()
@@ -110,12 +137,11 @@ import { getUserInfo } from '../../utils/auth'
 	}
 
 	.dock {
-		width: 250px;
+		width: 280px;
 		background-color: #f5f5f5;
 		border-right: 2px solid #332f22;
 		display: flex;
 		flex-direction: column;
-		padding: 20px;
 		transition: all 0.3s ease;
 		overflow-y: auto;
 	}
@@ -142,8 +168,12 @@ import { getUserInfo } from '../../utils/auth'
 
 	.user-info {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
+		padding: 20px 10px;
 		margin-bottom: 20px;
+		background-color: #ffffff;
+		cursor: pointer;
+		border-bottom: 1.5px solid #333;
 	}
 
 	.avatar-image {
@@ -151,23 +181,35 @@ import { getUserInfo } from '../../utils/auth'
 		height: 60px;
 		border-radius: 50%;
 		margin-right: 10px;
+		border: .2px solid #333;
+	}
+
+	.user-details {
+		display: flex;
+		flex-direction: column;
 	}
 
 	.name-text {
 		font-size: 20px;
 		font-weight: bold;
-		color: #0f652c;
-		cursor: pointer;
+		color: #333;
 	}
-	
-	.name-text:hover {
+
+	.info-text {
+		font-size: 14px;
+		color: #666;
+		margin-top: 5px;
+	}
+
+	/* 	.name-text:hover {
 		text-decoration: underline;
-	}
+	} */
 
 	.nav {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
+		padding: 15px;
 	}
 
 	.nav.mobile {
@@ -176,6 +218,7 @@ import { getUserInfo } from '../../utils/auth'
 		align-items: center;
 		height: 60px;
 		margin-bottom: 10px;
+		padding: 10px;
 	}
 
 	.nav-item {
@@ -220,6 +263,7 @@ import { getUserInfo } from '../../utils/auth'
 
 	.logout {
 		margin-top: auto;
+		padding: 15px;
 	}
 
 	.logout-btn {
@@ -237,6 +281,35 @@ import { getUserInfo } from '../../utils/auth'
 		background-color: #0a4a1f;
 	}
 
+
+	.dock-logo-container {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		margin-bottom: 10px;
+		padding-bottom: 2px;
+		border-bottom: #666 5px solid;
+	}
+	.logo-image {
+		width: 50px;
+		height: 50px;
+		margin-bottom: 3px;
+	}
+	.logo-text {
+		font-size: 16px;
+		font-weight: bold;
+		color: #666;
+		text-align: right;
+	}
+	
+	.feedback-text {
+		color: #0f652c;
+		font-weight: bold;
+	}
+	.feedback-text:hover {
+		text-decoration: underline;
+		cursor: pointer;
+	}
 	.content {
 		flex: 1;
 		/* padding: 20px; */

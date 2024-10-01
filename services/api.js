@@ -1,10 +1,13 @@
 // src/services/api.js
 
-import { setUserInfo } from '../utils/auth'
+import {
+	setUserInfo,
+	clearUserInfo
+} from '../utils/auth'
 import {
 	setToken,
 	getToken,
-	removeToken
+	removeToken,
 } from '../utils/storage'
 
 // const BASE_URL = 'http://101.34.211.174'
@@ -15,13 +18,13 @@ const BASE_URL = 'http://101.34.211.174' // 生产环境使用实际的 URL
 // 请求拦截器
 const requestInterceptor = (config) => {
 	const token = getToken()
-	
+
 	if (token) {
 		console.log(config)
 		if (1) { //config.method.toUpperCase() === 'GET'
 			config.url = `${config.url}?token=${token}`
 			console.log(config.url)
-		} 
+		}
 		// else {
 		// 	config.data = {
 		// 		...config.data,
@@ -29,6 +32,7 @@ const requestInterceptor = (config) => {
 		// 	}
 		// }
 	}
+	
 	return config
 }
 
@@ -40,8 +44,13 @@ const request = (options) => {
 			...interceptedOptions,
 			success: (res) => {
 				console.log(res)
-				if (res.statusCode === 200) { //removed res.data.code === "0" because of backend issues
+				if (res.statusCode ===
+					200) { //removed res.data.code === "0" because of backend issues
 					resolve(res.data)
+				} else if (res.statusCode === 401) {
+					uni.navigateTo({
+						url: '/pages/userLogin/userLogin'
+					})
 				} else {
 					reject(res.data)
 				}
@@ -79,9 +88,14 @@ export const api = {
 		logout: () => {
 			return request({
 				url: `${BASE_URL}/student/logout`,
-				method: 'POST'
+				method: 'POST',
+				header: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
 			}).then(() => {
 				removeToken()
+				clearUserInfo()
+
 			})
 		},
 		modifyPassword: (password) => {
@@ -90,6 +104,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					password
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -112,6 +129,9 @@ export const api = {
 				data: {
 					search_type: searchType,
 					keyword
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -121,6 +141,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					stu_id: stuId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -147,6 +170,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					club_id: clubId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -158,6 +184,9 @@ export const api = {
 					club_id: clubId,
 					search_type: searchType,
 					keyword
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -181,6 +210,9 @@ export const api = {
 				data: {
 					club_id: clubId,
 					club_member_ids: clubMemberIds
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -190,6 +222,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					club_member_id: clubMemberId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -199,6 +234,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					club_member_ids: clubMemberIds
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -210,6 +248,9 @@ export const api = {
 					club_id: clubId,
 					stu_id: stuId,
 					is_valid: isValid
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		}
@@ -223,6 +264,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					club_id: clubId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -236,6 +280,9 @@ export const api = {
 					session_times: sessionTimes,
 					session_date: sessionDate,
 					create_type: createType
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -246,6 +293,9 @@ export const api = {
 				data: {
 					club_id: clubId,
 					session_id: sessionId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -257,6 +307,9 @@ export const api = {
 					club_student_id: clubStudentId,
 					session_id: sessionId,
 					sign_status: signStatus
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -267,6 +320,9 @@ export const api = {
 				data: {
 					club_id: clubId,
 					session_ids: sessionIds
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -279,6 +335,9 @@ export const api = {
 					keyword,
 					club_id: clubId,
 					session_id: sessionId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -289,6 +348,9 @@ export const api = {
 				data: {
 					session_id: sessionId,
 					session_name: sessionName
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -300,6 +362,9 @@ export const api = {
 					club_student_id: clubStudentId,
 					session_id: sessionId,
 					session_time: sessionTime
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		}
@@ -319,6 +384,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					club_id: clubId
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -328,6 +396,9 @@ export const api = {
 				method: 'POST',
 				data: {
 					keywords
+				},
+				header: {
+					'content-type': 'application/x-www-form-urlencoded'
 				}
 			})
 		},
@@ -341,7 +412,9 @@ export const api = {
 			return request({
 				url: `${BASE_URL}/club/detail`,
 				method: 'POST',
-				data: { club_id: clubId },
+				data: {
+					club_id: clubId
+				},
 				header: {
 					'content-type': 'application/x-www-form-urlencoded'
 				}

@@ -20,6 +20,9 @@
 		<view class="profile-footer">
 			<text class="deregister-text" @click="showDeregisterModal">Deregister</text>
 		</view>
+		<view class="logout">
+			<text class="logout-btn" @click="logout">Logout</text>
+		</view>
 		<view class="logo-container">
 			<image class="logo-image" src="/static/ph_club_logo_full.png" mode="aspectFit"></image>
 			<text class="logo-text">PH Clubs {{webVerison}}</text>
@@ -41,6 +44,9 @@
 	import {
 		getUserInfo
 	} from '../../utils/auth'
+	import {
+		api
+	} from '../../services/api.js'
 	export default {
 		data() {
 			return {
@@ -62,6 +68,16 @@
 			this.loadStudentInfo()
 		},
 		methods: {
+			logout() {
+				api.student.logout()
+				uni.showToast({
+					title: '已退出登录',
+					icon: 'success'
+				})
+				uni.reLaunch({
+					url: '/pages/index/index'
+				})
+			},
 			loadStudentInfo() {
 				try {
 					const userInfo = getUserInfo()
@@ -215,6 +231,27 @@
 	.deregister-text:hover {
 		text-decoration: underline;
 	}
+	
+	.logout {
+		margin-top: auto;
+		padding-top: 10px;
+	}
+	
+	.logout-btn {
+		background-color: #0f652c;
+		color: white;
+		padding: 8px 15px;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s;
+		text-align: center;
+		display: block;
+	}
+	
+	.logout-btn:hover {
+		background-color: #0a4a1f;
+	}
+	
 	.logo-container {
 		display: flex;
 		flex-direction: column;

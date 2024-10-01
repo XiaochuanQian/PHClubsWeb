@@ -298,7 +298,7 @@ import { getUserInfo } from '../../utils/auth.js';
 
 	.category-name {
 		font-weight: bold;
-		font-size: 16px;
+		font-size: 20px;
 		color: #333;
 		margin: 10px 0;
 		padding: 0 10px;
@@ -307,9 +307,10 @@ import { getUserInfo } from '../../utils/auth.js';
 
 	.club-item {
 		padding: 10px;
-		margin: 5px 0;
-		border-radius: 3px;
+		margin: 0px 0;
+		/* border-radius: 3px; */
 		transition: background-color 0.3s;
+		border-bottom: 1px solid #e8e8e8;
 	}
 
 	.club-item:hover {

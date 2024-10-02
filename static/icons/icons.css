@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4690411 */
-  src: url('//at.alicdn.com/t/c/font_4690411_7hpmf94kedt.woff2?t=1726832942043') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4690411_7hpmf94kedt.woff?t=1726832942043') format('woff'),
-       url('//at.alicdn.com/t/c/font_4690411_7hpmf94kedt.ttf?t=1726832942043') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4690411_lul16cip9ia.woff2?t=1727851746415') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4690411_lul16cip9ia.woff?t=1727851746415') format('woff'),
+       url('//at.alicdn.com/t/c/font_4690411_lul16cip9ia.ttf?t=1727851746415') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,26 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-verification:before {
+  content: "\e61d";
+}
+
+.icon-user:before {
+  content: "\e7ae";
+}
+
+.icon-lock:before {
+  content: "\e7c9";
+}
+
+.icon-lock-fill:before {
+  content: "\e7b9";
+}
+
+.icon-user-fill:before {
+  content: "\e7d5";
 }
 
 .icon-Import:before {

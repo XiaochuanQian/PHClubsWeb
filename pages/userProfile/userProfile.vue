@@ -1,3 +1,5 @@
+<!-- add change password choice -->
+
 <template>
 	<view class="user-profile">
 		<view class="profile-header">

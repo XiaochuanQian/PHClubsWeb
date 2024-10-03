@@ -11,11 +11,34 @@
 					<text class="label-text">{{ item.label }}</text>
 				</view>
 				<view class="info-value">
-					<text class="value-text">{{ item.value }}</text>
-					<view class="copy-btn-container">
-						<view v-if="item.copyable" @click="copyToClipboard(item.value)"
-							class="iconfont icon-file-copy copy-btn"></view>
-					</view>
+					<template v-if="item.label !== 'Password'">
+						<text class="value-text">{{ item.value }}</text>
+						<view v-if="item.copyable" class="copy-btn-container">
+							<view @click="copyToClipboard(item.value)"
+								class="iconfont icon-file-copy copy-btn"></view>
+						</view>
+					</template>
+					<template v-else>
+						<text v-if="!isEditing" class="value-text">{{ password }}</text>
+						<input v-else
+							type="text" 
+							v-model="password" 
+							class="password-input" 
+							placeholder="Enter new password" />
+						<view class="password-actions">
+							<view v-if="!isEditing" @click="startEditing" class="password-btn copy-btn">
+								Edit
+							</view>
+							<template v-else>
+								<view @click="savePassword" class="password-btn">
+									Save
+								</view>
+								<view @click="cancelEditing" class="password-btn">
+									Cancel
+								</view>
+							</template>
+						</view>
+					</template>
 				</view>
 			</view>
 		</view>
@@ -43,12 +66,9 @@
 </template>
 
 <script>
-	import {
-		getUserInfo
-	} from '../../utils/auth'
-	import {
-		api
-	} from '../../services/api.js'
+	import { getUserInfo } from '../../utils/auth'
+	import { api } from '../../services/api.js'
+	import { getCredentials, setCredentials } from '../../utils/storage.js'
 	export default {
 		data() {
 			return {
@@ -61,9 +81,10 @@
 					role: 'Student',
 					lastLogin: '2023-09-18 14:30:00'
 				},
-				userInfo: [
-
-				]
+				userInfo: [],
+				password: '',
+				originalPassword: '',
+				isEditing: false,
 			}
 		},
 		mounted() {
@@ -73,7 +94,7 @@
 			logout() {
 				api.student.logout()
 				uni.showToast({
-					title: '已退出登录',
+					title: 'Logged out successfully',
 					icon: 'success'
 				})
 				uni.reLaunch({
@@ -83,61 +104,47 @@
 			loadStudentInfo() {
 				try {
 					const userInfo = getUserInfo()
+					const credentials = getCredentials()
+					// console.log('User Info:', userInfo)
+					// console.log('Credentials:', credentials)
+					
+					if (!credentials) {
+						console.warn('No credentials found. User might need to log in again.')
+						// 可以在这里添加重定向到登录页面的逻辑
+						return
+					}
+
 					this.user = {
 						stuId: userInfo.stu_id,
+						password: credentials.password,
 						grade: userInfo.grade,
 						chiName: userInfo.chi_name,
 						engName: userInfo.eng_name,
 						roleName: userInfo.role_name,
 						lastLoginTime: userInfo.last_login_time
 					}
+					
+					// Get password from credentials
+					this.password = credentials ? credentials.password : ''
+					this.originalPassword = this.password
 
-					this.userInfo = [{
-							label: 'Student ID',
-							value: this.user.stuId,
-							copyable: true
-						},
-						{
-							label: 'Grade',
-							value: this.user.grade,
-							copyable: true
-						},
-						{
-							label: 'Chinese Name',
-							value: this.user.chiName,
-							copyable: true
-						},
-						{
-							label: 'English Name',
-							value: this.user.engName,
-							copyable: true
-						},
-						{
-							label: 'Role',
-							value: this.user.roleName,
-							copyable: false
-						},
-						{
-							label: 'Last Login',
-							value: this.user.lastLoginTime,
-							copyable: false
-						}
+					this.userInfo = [
+						{ label: 'Student ID', value: this.user.stuId, copyable: true },
+						{ label: 'Password', value: this.user.password, copyable: false },
+						{ label: 'Grade', value: this.user.grade, copyable: true },
+						{ label: 'Chinese Name', value: this.user.chiName, copyable: true },
+						{ label: 'English Name', value: this.user.engName, copyable: true },
+						{ label: 'Role', value: this.user.roleName, copyable: false },
+						{ label: 'Last Login', value: this.user.lastLoginTime, copyable: false }
 					]
 				} catch (error) {
 					console.error('Failed to load user info:', error)
-					// Handle error (e.g., show error message to user)
 				}
 			},
 			copyToClipboard(text) {
 				uni.setClipboardData({
 					data: text,
-					success: () => {
-						// uni.showToast({
-						//   title: 'Copied to clipboard',
-						//   icon: 'success',
-						//   duration: 2000
-						// });
-					},
+					success: () => {},
 					showToast: false
 				});
 			},
@@ -145,16 +152,54 @@
 				this.$refs.deregisterPopup.open();
 			},
 			handleDeregister() {
-				// Implement deregister logic here
 				console.log('User confirmed deregistration');
-				// After deregistration logic, close the popup
 				this.$refs.deregisterPopup.close();
 			},
 			navigateToUserAgreement() {
 				uni.navigateTo({
 					url: '../userAgreement/userAgreement?showWeb=true'
 				});
-			}
+			},
+			startEditing() {
+				this.isEditing = true;
+				this.originalPassword = this.password;
+			},
+			savePassword() {
+				if (this.password.length < 6) {
+					uni.showToast({
+						title: 'Password must be at least 6 characters',
+						icon: 'none'
+					});
+					return;
+				}
+				
+				api.student.modifyPassword(this.password)
+					.then(() => {
+						uni.showToast({
+							title: 'Password changed successfully',
+							icon: 'success'
+						});
+						this.isEditing = false;
+						this.originalPassword = this.password;
+						// Update stored credentials
+						const credentials = getCredentials();
+						if (credentials) {
+							credentials.password = this.password;
+							setCredentials(credentials.username, this.password);
+						}
+					})
+					.catch(error => {
+						console.error('Failed to change password:', error);
+						uni.showToast({
+							title: 'Failed to change password',
+							icon: 'none'
+						});
+					});
+			},
+			cancelEditing() {
+				this.isEditing = false;
+				this.password = this.originalPassword;
+			},
 		}
 	}
 </script>
@@ -204,6 +249,7 @@
 	.value-text {
 		color: #333333;
 		font-size: 16px;
+		flex-grow: 1;
 	}
 	.copy-btn-container {
 		width: 60px;
@@ -284,6 +330,30 @@
 		font-weight: bold;
 	}
 	.user-agreement-text:hover {
+		text-decoration: underline;
+	}
+	
+	.password-input {
+		width: 60%;
+		height: 30px;
+		padding: 0 10px;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+	}
+	
+	.password-actions {
+		display: flex;
+		justify-content: flex-end;
+	}
+	
+	.password-btn {
+		margin-left: 10px;
+		color: #0f652c;
+		font-size: 14px;
+		cursor: pointer;
+	}
+	
+	.password-btn:hover {
 		text-decoration: underline;
 	}
 </style>

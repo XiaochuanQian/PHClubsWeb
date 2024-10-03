@@ -70,6 +70,7 @@
 		api
 	} from '../../services/api.js'
 	import captchaService from '../../services/captchaService.js'
+	import { setCredentials, getCredentials } from '../../utils/storage.js'
 	export default {
 		name: 'Login',
 		data() {
@@ -104,7 +105,9 @@
 						} else if (response.code == '1001') {
 							this.errorMessage = "Student Id or password incorrect."
 							this.showError()
-						} else {
+						} else if (response.code == '0') { // 假设 '0' 表示登录成功
+							// 登录成功，保存用户名和密码
+							setCredentials(this.studentId, this.password)
 							uni.navigateTo({
 								url: '../userIndex/userIndex'
 							})
@@ -126,7 +129,7 @@
 				this.showErrorAnimation = true;
 				setTimeout(() => {
 					this.showErrorAnimation = false;
-				}, 500); // 动画持续时间
+				}, 200); // 动画持续时间
 			},
 			handleForgotPassword() {
 				this.showForgotPasswordModal = true;

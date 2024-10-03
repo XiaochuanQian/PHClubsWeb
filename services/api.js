@@ -8,6 +8,7 @@ import {
 	setToken,
 	getToken,
 	removeToken,
+	removeCredentials
 } from '../utils/storage'
 
 // const BASE_URL = 'http://101.34.211.174'
@@ -20,10 +21,10 @@ const requestInterceptor = (config) => {
 	const token = getToken()
 
 	if (token) {
-		console.log(config)
+		// console.log(config)
 		if (1) { //config.method.toUpperCase() === 'GET'
 			config.url = `${config.url}?token=${token}`
-			console.log(config.url)
+			// console.log(config.url)
 		}
 		// else {
 		// 	config.data = {
@@ -43,7 +44,7 @@ const request = (options) => {
 		uni.request({
 			...interceptedOptions,
 			success: (res) => {
-				console.log(res)
+				// console.log(res)
 				if (res.statusCode ===
 					200) { //removed res.data.code === "0" because of backend issues
 					resolve(res.data)
@@ -56,7 +57,7 @@ const request = (options) => {
 				}
 			},
 			fail: (err) => {
-				console.log("no")
+				// console.log("no")
 				reject(err)
 			}
 		})
@@ -94,6 +95,7 @@ export const api = {
 				}
 			}).then(() => {
 				removeToken()
+				removeCredentials() // 确保这里被正确调用
 				clearUserInfo()
 
 			})

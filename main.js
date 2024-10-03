@@ -3,6 +3,7 @@ import App from './App'
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'
+
 import 'utils/guard.js'
 Vue.config.productionTip = false
 // Vue.mixin(guard)

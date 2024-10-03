@@ -42,27 +42,29 @@ This project is developed on the uni-app framework.
   </p>
 </div>
 
-## Pages
+## Features
 
 ### Home Pages
 
-- index: navigation
-- home: updates and announcments
-- documentation: download maunals on how to use the system
-- about: contact information, credits, copyright, license
+- **index**: Navigation page
+- **home**: Updates and announcements
+- **documentation**: Download manuals on how to use the system
+- **about**: Contact information, credits, copyright, and license
 
 ### Login Pages
 
-- userLogin: user login page with link to user agreement
+- **userLogin**: User login page with a link to the user agreement
 
 ### Dashboard
 
-- userIndex: navigation in dashboard
-- userOverview: clubs list, club stats, club info/description
-- userPersonalData: list: club enrolled, time, attendence
-- userProfile: name, role, class, password
+- **userIndex**: Navigation within the dashboard
+- **userOverview**: Clubs list, club stats, club info/description
+- **userPersonalData**: List of clubs enrolled, time, and attendance
+- **userProfile**: Displays name, role, class, and password
 
 ### Teachers' Pages
+
+- **userAgreement**: User agreement details
 
 ## Run
 

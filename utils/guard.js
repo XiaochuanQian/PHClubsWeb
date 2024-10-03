@@ -13,7 +13,7 @@ let needLogin = [
 export default function initPermission() {
 	let list = ["navigateTo", "redirectTo", "reLaunch", "switchTab"];
 	list.forEach(item => { //用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
-		console.log(item, 'router list item')
+		// console.log(item, 'router list item')
 		uni.addInterceptor(item, {
 			invoke(e) { // 调用前拦截
 				//获取用户的token

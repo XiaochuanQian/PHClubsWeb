@@ -1,7 +1,7 @@
 <!-- add show club stats -->
 <template>
 	<view class="user-overview" :class="{ 'mobile': isMobile }">
-		<view class="club-list-container" v-if="!isMobile || (isMobile && !selectedClub)">
+		<view class="club-list-container" :class="{ 'mobile': isMobile }" v-if="!isMobile || (isMobile && !selectedClub)">
 			<input v-model="searchQuery" placeholder="Search clubs" class="search-input" @input="searchClubs" />
 			<scroll-view scroll-y class="club-list">
 				<view v-for="category in filteredClubCategories" :key="category.id" class="category">
@@ -454,7 +454,27 @@ echarts.use([PieChart, LineChart, TitleComponent, TooltipComponent, LegendCompon
 		height: 100%;
 		background-color: #ffffff;
 		z-index: 10;
-		/* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.club-list-container.mobile {
+		width: 100%;
+		height: auto;
+		min-height: 100vh;
+	}
+
+	@media screen and (max-width: 768px) {
+		.club-list-container,
+		.club-info.mobile {
+			width: 100%;
+			height: auto;
+			min-height: 100vh;
+		}
+
+		.club-list {
+			height: auto;
+			min-height: calc(100vh - 60px); /* 减去搜索框的高度 */
+		}
 	}
 
 	.search-input {

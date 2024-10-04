@@ -13,8 +13,8 @@ import {
 
 // const BASE_URL = 'http://101.34.211.174'
 
-// const BASE_URL = 'http://localhost:5173/api'
-const BASE_URL = 'http://101.34.211.174' // 生产环境使用实际的 URL
+const BASE_URL = 'http://124.223.107.10:22222'
+// const BASE_URL = 'http://101.34.211.174' // 生产环境使用实际的 URL
 
 // 请求拦截器
 const requestInterceptor = (config) => {

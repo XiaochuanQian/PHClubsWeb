@@ -1,4 +1,3 @@
-<!-- add show club stats -->
 <template>
 	<view class="user-overview" :class="{ 'mobile': isMobile }">
 		<view class="club-list-container" :class="{ 'mobile': isMobile }" v-if="!isMobile || (isMobile && !selectedClub)">

@@ -17,6 +17,8 @@
 					@click="switchPage('PersonalData')">Personal Data</text>
 				<text :class="['nav-item', currentPage === 'Overview' ? 'active' : '']"
 					@click="switchPage('Overview')">Overview</text>
+				<text v-if="role_id === 2" :class="['nav-item', currentPage === 'ClubManagement' ? 'active' : '']"
+					@click="switchPage('ClubManagement')">Club Management</text>
 			</view>
 			<view v-if="!isMobile" class="logout"> <!-- || !isDockCollapsed -->
 				<!-- <text class="logout-btn" @click="logout">Logout</text> -->
@@ -46,6 +48,7 @@
 	import PersonalDataForm from '../userPersonalData/userPersonalData.vue'
 	import DashboardOverview from '../userOverview/userOverview.vue'
 	import Profile from '../userProfile/userProfile.vue'
+	import ClubManagement from '../userClubManagement/userClubManagement.vue'
 	import {
 		getUserInfo
 	} from '../../utils/auth'
@@ -58,6 +61,7 @@
 			PersonalData: PersonalDataForm,
 			Overview: DashboardOverview,
 			Profile: Profile,
+			ClubManagement: ClubManagement,
 		},
 		data() {
 			return {
@@ -67,6 +71,7 @@
 				engName: "JohnnyAppleSeed",
 				chiName: "John",
 				role: "student",
+				role_id: 1,
 				grade: "11.6",
 				stu_id: "123456",
 				webVerison : "0.1.0",
@@ -80,6 +85,7 @@
 					this.chiName = userInfo.chi_name
 					this.role = userInfo.role_name
 					this.stu_id = userInfo.stu_id
+					this.role_id = userInfo.role_id
 				} catch (error) {
 					console.error('Failed to load user info:', error)
 					// Handle error (e.g., show error message to user)

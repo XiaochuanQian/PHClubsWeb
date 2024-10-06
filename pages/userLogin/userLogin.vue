@@ -70,7 +70,7 @@
 		api
 	} from '../../services/api.js'
 	import captchaService from '../../services/captchaService.js'
-	import { setCredentials, getCredentials } from '../../utils/storage.js'
+	import { setCredentials, getCredentials, getToken } from '../../utils/storage.js'
 	export default {
 		name: 'Login',
 		data() {
@@ -161,11 +161,22 @@
 				uni.navigateTo({
 					url: "/pages/index/index"
 				})
+			},
+			checkExistingToken() {
+				const token = getToken()
+				if (token) {
+					uni.navigateTo({
+						url: '../userIndex/userIndex'
+					})
+				}
 			}
-
 		},
 		mounted() {
 			this.refreshCaptcha();
+			this.checkExistingToken(); // 在组件加载时检查token
+		},
+		onShow() {
+			this.checkExistingToken(); // 在页面显示时检查token
 		}
 	}
 </script>

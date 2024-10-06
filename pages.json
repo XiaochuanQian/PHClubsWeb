@@ -7,70 +7,67 @@
 			}
 		},
 		{
-			"path" : "pages/home/home",
-			"style" : 
-			{
-				"navigationBarTitleText" : "PH Clubs | Home"
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "PH Clubs | Home"
 			}
 		},
 		{
-			"path" : "pages/documentation/documentation",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/documentation/documentation",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/about/about",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "navigation/navigation",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "navigation/navigation",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/userLogin/userLogin",
-			"style" : 
-			{
-				"navigationBarTitleText" : "PH Clubs | Login"
+			"path": "pages/userLogin/userLogin",
+			"style": {
+				"navigationBarTitleText": "PH Clubs | Login"
 			}
 		},
 		{
-			"path" : "pages/userAgreement/userAgreement",
-			"style" : 
-			{
-				"navigationBarTitleText" : "PH Clubs | User Agreement"
+			"path": "pages/userAgreement/userAgreement",
+			"style": {
+				"navigationBarTitleText": "PH Clubs | User Agreement"
 			}
 		},
 		{
-			"path" : "pages/userIndex/userIndex",
-			"style" : 
-			{
-				"navigationBarTitleText" : "PH Clubs | Management"
+			"path": "pages/userIndex/userIndex",
+			"style": {
+				"navigationBarTitleText": "PH Clubs | Management"
 			}
 		},
 		{
-			"path" : "pages/userPersonalData/userPersonalData",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/userPersonalData/userPersonalData",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/userOverview/userOverview",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/userOverview/userOverview",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		},
 		{
-			"path" : "pages/userProfile/userProfile",
+			"path": "pages/userProfile/userProfile",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path" : "pages/userClubManagement/userClubManagement",
 			"style" : 
 			{
 				"navigationBarTitleText" : ""

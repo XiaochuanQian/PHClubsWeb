@@ -1,3 +1,5 @@
+// TODO: add cookie support for safari and phone
+
 // utils/storage.js
 
 const TOKEN_KEY = 'api_token'
